@@ -1,0 +1,8 @@
+{
+  "databaseURL": "https://Ivan-Bowen-s-workspace-t34ncp.us-east-1.xata.sh/db/shebeauty",
+  "codegen": {
+    "output": "util/xata.js",
+    "moduleType": "esm",
+    "declarations": true
+  }
+}
