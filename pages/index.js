@@ -1,12 +1,10 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import Featured from '../components/Featured'
 import Navbar from '../components/Navbar'
 import { getFolders, mapIMageResources } from '../lib/cloudinary'
-// import styles from '../styles/Home.module.css'
 
 export default function Home({ images }) {
-  
+
   return (
     <div>
       <Head>
@@ -19,12 +17,12 @@ export default function Home({ images }) {
     </div>
   )
 }
+
 export async function getStaticProps() {
-  console.log("GET STATIC")
   const results = await fetch(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/resources/search?expression=folder%3D%22herbeauty%22`, {
-     headers: {
-        Authorization: `Basic ${Buffer.from(process.env.CLOUDINARY_API_KEY + ':' + process.env.CLOUDINARY_API_SECRET).toString('base64')}`
-     }
+    headers: {
+      Authorization: `Basic ${Buffer.from(process.env.CLOUDINARY_API_KEY + ':' + process.env.CLOUDINARY_API_SECRET).toString('base64')}`
+    }
   }).then(r => r.json());
 
   const { resources, next_cursor: nextCursor } = results;
@@ -36,10 +34,10 @@ export async function getStaticProps() {
   console.log('folders', folders);
 
   return {
-     props: {
-        images,
-        nextCursor: nextCursor || false,
-        folders
-     }
+    props: {
+      images,
+      nextCursor: nextCursor || false,
+      folders
+    }
   }
 }
