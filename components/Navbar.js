@@ -13,7 +13,7 @@ const Navbar = () => {
 		email = session.user.email
 		name = session.user.name.split(" ")[0]
 	}
-	let [number, setNumber] = useState(1);
+	let [number, setNumber] = useState(0);
 	(async function getCart () {   
       const cartItems = await fetch("/api/get-carts", {
          method: "POST",
@@ -38,11 +38,11 @@ const Navbar = () => {
 				<Image
 					src={logo}
 					alt="/"
-					width="100"
-					height="100"
+					width="70"
+					height="70"
 				/>
 				<div>
-					<ul className="items-center gap-3 flex">
+					<ul className="items-center xs:gap-1 gap-3 flex">
 
 						<Link href="/">
 							<li className="ml-10 text-sm uppercase hover:border-b">
@@ -51,17 +51,16 @@ const Navbar = () => {
 						</Link>
 						{(session) &&
 						<>
-						<Link href="/" onClick={signIn}>
-							<button>Cart {number}</button>
-						
+						<Link href="/cart">
+							<button className="xs:p-0 text-sm">Cart {number}</button>
 						</Link>
 						<Link href="/" onClick={signOut}>
 							<Image
 								src={session.user.image}
 								alt="/"
-								width="30"
-								height="30"
-								className="rounded-xl ml-3 group-hover:opacity-20"
+								width="40"
+								height="40"
+								className="rounded-full ml-3 group-hover:opacity-20"
 							/>
 						</Link>
 						</>
