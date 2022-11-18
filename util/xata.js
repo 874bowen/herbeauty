@@ -58,6 +58,49 @@ const tables = [
       { name: "expires", type: "datetime" },
     ],
   },
+  {
+    name: "products",
+    columns: [
+      { name: "name", type: "string", unique: true },
+      { name: "description", type: "string" },
+      { name: "price", type: "float", notNull: true, defaultValue: "0.00" },
+      { name: "category", type: "string" },
+      { name: "tag", type: "string" },
+      { name: "size", type: "int" },
+      { name: "available", type: "int" },
+      { name: "color", type: "string" },
+    ],
+  },
+  {
+    name: "cart_items",
+    columns: [
+      { name: "user_id", type: "link", link: { table: "nextauth_users" } },
+      { name: "quantity", type: "float", notNull: true, defaultValue: "1" },
+      { name: "order", type: "link", link: { table: "orders" } },
+      { name: "product_id", type: "link", link: { table: "products" } },
+    ],
+  },
+  {
+    name: "cart_session",
+    columns: [
+      {
+        name: "product_id",
+        type: "link",
+        link: { table: "products" },
+        unique: true,
+      },
+      { name: "user_id", type: "link", link: { table: "nextauth_users" } },
+      { name: "quantity", type: "float", notNull: true, defaultValue: "1" },
+      {
+        name: "is_ordered",
+        type: "bool",
+        notNull: true,
+        defaultValue: "false",
+      },
+      { name: "order", type: "link", link: { table: "orders" } },
+    ],
+  },
+  { name: "orders", columns: [] },
 ];
 /** @type { import('@xata.io/client').ClientConstructor<{}> } */
 const DatabaseClient = buildClient();

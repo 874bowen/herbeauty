@@ -1,5 +1,8 @@
 
 .footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
   width: 100%;
   color: white;
   background-color: #292a5e;
@@ -7,4 +10,5 @@
   justify-content: center;
   align-items: center;
   padding: 1em 0;
+
 }
