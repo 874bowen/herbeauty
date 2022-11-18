@@ -1,22 +1,21 @@
 import { getXataClient } from "../../util/xata";
 
 async function handler(req, res) {
-   let products = []
    const xata = getXataClient();
 
-   const { email } = req.body;
+   const { total, email } = req.body;
 
    const user = await xata.db.nextauth_users.filter({ email }).getFirst();
+
+   const order = await xata.db.orders.create({ total_amount: total });
 
    const cartItems = await xata.db.cart_session.filter({ user_id: user.id, is_ordered: false }).getMany();
 
    for (let item of cartItems) {
-      const id = item.product_id.id;
-      let product = await xata.db.products.filter({ id }).getFirst();
-      product = { ...product, quantity: item.quantity };
-      products.push(product);
+      item.update({ is_ordered: true, order: order.id });
    }
-   res.send(products);
+
+   res.end();
 }
 
 export default handler;
