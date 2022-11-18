@@ -1,7 +1,9 @@
 import Head from 'next/head'
 import Featured from '../components/Featured'
+import Footer from '../components/Footer/Footer'
 import Navbar from '../components/Navbar'
 import { getFolders, mapIMageResources } from '../lib/cloudinary'
+
 
 export default function Home({ images }) {
 
@@ -14,6 +16,7 @@ export default function Home({ images }) {
       </Head>
       <Navbar />
       <Featured images={images} />
+      <Footer />
     </div>
   )
 }
@@ -30,8 +33,6 @@ export async function getStaticProps() {
   const images = mapIMageResources(resources);
 
   const { folders } = await getFolders();
-
-  console.log('folders', folders);
 
   return {
     props: {

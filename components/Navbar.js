@@ -9,28 +9,28 @@ const Navbar = () => {
 	const { data: session } = useSession();
 	let name = "";
 	let email = "";
-	if (session){
+	if (session) {
 		email = session.user.email
 		name = session.user.name.split(" ")[0]
 	}
 	let [number, setNumber] = useState(0);
-	(async function getCart () {   
-      const cartItems = await fetch("/api/get-carts", {
-         method: "POST",
-         headers: {
-           "Content-Type": "application/json"
-         },
+	(async function getCart() {
+		const cartItems = await fetch("/api/get-carts", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
 			body: JSON.stringify({
 				email: email
 			})
-       }).then(r => r.json());
-      
-       setNumber(cartItems.length);
-   })()
+		}).then(r => r.json());
+
+		setNumber(cartItems.length);
+	})()
 
 
 
-	
+
 
 	return (
 		<div className="fixed w-full h-20 shadow-xl z-[100]">
@@ -50,22 +50,22 @@ const Navbar = () => {
 							</li>
 						</Link>
 						{(session) &&
-						<>
-						<Link href="/cart">
-							<button className="xs:p-0 text-sm">Cart {number}</button>
-						</Link>
-						<Link href="/" onClick={signOut}>
-							<Image
-								src={session.user.image}
-								alt="/"
-								width="40"
-								height="40"
-								className="rounded-full ml-3 group-hover:opacity-20"
-							/>
-						</Link>
-						</>
+							<>
+								<Link href="/cart">
+									<button className="xs:p-0 text-sm">Cart {number}</button>
+								</Link>
+								<Link href="/" onClick={signOut}>
+									<Image
+										src={session.user.image}
+										alt="/"
+										width="40"
+										height="40"
+										className="rounded-full ml-3 group-hover:opacity-20"
+									/>
+								</Link>
+							</>
 						}
-						
+
 						<Link href="/" onClick={signIn}>{(!session) &&
 							<button>Login</button>
 						}
