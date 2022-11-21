@@ -7,7 +7,7 @@ This means that backend development is simplified for you and you can easily tra
 
 ## Github
 
-Check out the complete source code in this  [GitHub Repository](https://github.com/874bowen/herbeauty.git).
+Check out the complete source code in this  [GitHub Repository](https://res.cloudinary.com/bowenivan/image/upload/c_scale,h_500,w_500/v1669032197/bowen-uploads/herbeauty_db_schema_jdm4s0.png).
 
 ## What is serverless?
 Serverless is a cloud-native development model that enables developers to create and run applications without the need for server management. There are still servers but they are just abstracted away from the developer. The developer uses an API to access and manipulate data.
