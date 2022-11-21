@@ -1,16 +1,22 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Building an e-commerce Next.js application on Xata 
+It is not always easy for a front-end developer to create a fully functional application. This is due to the fact that we must first learn a backend language before integrating it with your client application. This might be time consuming and that is where Xata comes in. 
 
-## Getting Started
+>Xata is a serverless database that includes powerful search and analytics. One API, multiple type-safe client libraries, and optimized for your development workflow.
 
-First, run the development server:
+This means that backend development is simplified for you and you can easily transform ideas into reality.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## Github
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Check out the complete source code in this  [GitHub Repository](https://github.com/874bowen/herbeauty.git).
+
+## What is serverless?
+Serverless is a cloud-native development model that enables developers to create and run applications without the need for server management. There are still servers but they are just abstracted away from the developer. The developer uses an API to access and manipulate data.
+
+## What we are going to build
+In this article we are going to build a Next.js e-commerce application on Xata. We are also going to use Cloudinary for image transformations. Below is a schema of our database
+
+
+![img_1.png](https://res.cloudinary.com/bowenivan/image/upload/v1669032197/bowen-uploads/herbeauty_db_schema_jdm4s0.png)
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
