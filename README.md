@@ -1,5 +1,5 @@
-## Building an e-commerce Next.js application on Xata 
-It is not always easy for a front-end developer to create a fully functional application. This is due to the fact that we must first learn a backend language before integrating it with your client application. This might be time consuming and that is where Xata comes in. 
+## How to build an e-commerce Next.js application with Xata and Cloudinary
+When building an e-commerce application backend development is important. Developers need to come up with complex functions and this may be time consuming and costly. Serverless computing allows developers to build applications more quickly and less costly because they don't have to worry about managing their own servers.
 
 >Xata is a serverless database that includes powerful search and analytics. One API, multiple type-safe client libraries, and optimized for your development workflow.
 
@@ -10,10 +10,10 @@ This means that backend development is simplified for you and you can easily tra
 Check out the complete source code in this  [GitHub Repository](https://res.cloudinary.com/bowenivan/image/upload/c_scale,h_500,w_500/v1669032197/bowen-uploads/herbeauty_db_schema_jdm4s0.png).
 
 ## What is serverless?
-Serverless is a cloud-native development model that enables developers to create and run applications without the need for server management. There are still servers but they are just abstracted away from the developer. The developer uses an API to access and manipulate data.
+Serverless is a development model in the cloud that enables developers to create and run applications without the need for server management. There are still servers but they are just abstracted away from the developer. The developer uses an API to access and manipulate data.
 
 ## What we are going to build
-In this article we are going to build a Next.js e-commerce application on Xata. We are also going to use Cloudinary for image transformations. Below is a schema of our database
+In this article we are going to build a Next.js e-commerce application with Xata and Cloudinary for image transformations. Below is a schema of our database
 
 
 ![img_1.png](https://res.cloudinary.com/bowenivan/image/upload/v1669032197/bowen-uploads/herbeauty_db_schema_jdm4s0.png)
