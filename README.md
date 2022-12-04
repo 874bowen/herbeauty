@@ -1,20 +1,63 @@
 ## How to build an e-commerce Next.js application with Xata and Cloudinary
-When building an e-commerce application backend development is important. Developers need to come up with complex functions and this may be time consuming and costly. Serverless computing allows developers to build applications more quickly and less costly because they don't have to worry about managing their own servers.
+When building an e-commerce application backend development is important. Developers need to come up with complex functions and this might be time-consuming and costly. Serverless computing allows developers to build applications more quickly and less costly because they don't have to worry about managing their own servers.
 
->Xata is a serverless database that includes powerful search and analytics. One API, multiple type-safe client libraries, and optimized for your development workflow.
+## What is serverless?
+Serverless is a development model in the cloud that enables developers to create and run applications without the need for server management. These are servers but they are just abstracted away from the developer.
 
-This means that backend development is simplified for you and you can easily transform ideas into reality.
+In this article, we are going to use [Xata](https://xata.io/) as serverless database, think of Xata as a platform where we can create and access the database inside our application through API endpoints. 
+
+## The need for image management
+
+Traditionally, we manage our images and media directly from our project. This restricts the way we can serve and transform our media. 
+
+[Cloudinary](https://cloudinary.com/) is a tool we are going to use for managing the images for our application.
 
 ## Github
 
 Check out the complete source code in this  [GitHub Repository](https://res.cloudinary.com/bowenivan/image/upload/c_scale,h_500,w_500/v1669032197/bowen-uploads/herbeauty_db_schema_jdm4s0.png).
 
-## What is serverless?
-Serverless is a development model in the cloud that enables developers to create and run applications without the need for server management. There are still servers but they are just abstracted away from the developer. The developer uses an API to access and manipulate data.
 
 ## What we are going to build
-In this article we are going to build a Next.js e-commerce application with Xata and Cloudinary for image transformations. Below is a schema of our database
+In this article we are going to build a Next.js e-commerce application for beauty products with Xata and Cloudinary for image management. 
 
+We will cover:
+- Uploading and fetching images from Cloudinary
+- Authentication using nextAuth and Xata using Google
+- Create, Read, Update and Delete operations on a Xata database
+
+To follow along through this article you are required to have:
+
+- Create a free [Xata](https://xata.io/) and [Cloudinary](https://cloudinary.com/) account
+- Basic knowledge of React or Next.js
+- Basic knowledge in ES6 JavaScript features
+- Familiarity in using CSS frameworks like tailwind 
+
+
+## Step 0: Getting started from a demo starter
+
+We are going to get started from a basic application the build up on it through the rest of this article.
+
+On your terminal you can run this:
+
+```bash
+npx create-next-app -e https://github.com/874bowen/herbeauty_demo_starter
+# or 
+yarn create next-app -e https://github.com/874bowen/herbeauty_demo_starter
+```
+Once the installation is done you can navigate to the directory then start your development server:
+
+```bash
+cd herbeauty_demo_starter
+
+npx run dev
+# or
+yarn dev
+
+```
+
+
+
+Below is a schema of our database
 
 ![img_1.png](https://res.cloudinary.com/bowenivan/image/upload/v1669032197/bowen-uploads/herbeauty_db_schema_jdm4s0.png)
 
