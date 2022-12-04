@@ -1,4 +1,4 @@
-## How to build an e-commerce Next.js application with Xata and Cloudinary
+# How to build an e-commerce Next.js application with Xata and Cloudinary
 When building an e-commerce application backend development is important. Developers need to come up with complex functions and this might be time-consuming and costly. Serverless computing allows developers to build applications more quickly and less costly because they don't have to worry about managing their own servers.
 
 ## What is serverless?
@@ -8,13 +8,13 @@ In this article, we are going to use [Xata](https://xata.io/) as serverless data
 
 ## The need for image management
 
-Traditionally, we manage our images and media directly from our project. This restricts the way we can serve and transform our media. 
+Traditionally, we manage our images and media directly from our project. This restricts the way we can serve and transform our media. By transformations we mean basic things like cropping and resizing to advanced layering and text additions.
 
 [Cloudinary](https://cloudinary.com/) is a tool we are going to use for managing the images for our application.
 
 ## Github
 
-Check out the complete source code in this  [GitHub Repository](https://res.cloudinary.com/bowenivan/image/upload/c_scale,h_500,w_500/v1669032197/bowen-uploads/herbeauty_db_schema_jdm4s0.png).
+Check out the complete source code in this  [GitHub Repository](https://github.com/874bowen/herbeauty).
 
 
 ## What we are going to build
@@ -54,12 +54,17 @@ npx run dev
 yarn dev
 
 ```
+Once the development server is up on your browser address bar type http://localhost:3000 and we should be able to see an application like the one below.
+
+![img](https://res.cloudinary.com/bowenivan/image/upload/c_scale,h_840,q_auto:best,w_1440/v1670145998/Articles/herbeauty/demo_ss_xzv5v2.png)
+
+In the `src/index.js` file we have imported three components, the navbar, featured and footer component. The featured component renders the featured products we have to the user.
 
 
-
+## Step 1: Uploading and fetching images from cloudinary
 Below is a schema of our database
 
-![img_1.png](https://res.cloudinary.com/bowenivan/image/upload/v1669032197/bowen-uploads/herbeauty_db_schema_jdm4s0.png)
+![img_1.png](https://res.cloudinary.com/bowenivan/image/upload/c_fill,h_840,q_auto:best,w_1440/v1669032197/bowen-uploads/herbeauty_db_schema_jdm4s0.png)
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
