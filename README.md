@@ -10,7 +10,7 @@ In this article, we are going to use [Xata](https://xata.io/) as serverless data
 
 Traditionally, we manage our images and media directly from our project. This restricts the way we can serve and transform our media. By transformations we mean basic things like cropping and resizing to advanced layering and text additions.
 
-[Cloudinary](https://cloudinary.com/) is a tool we are going to use for managing the images for our application.
+[Cloudinary](https://cloudinary.com/) is a tool we are going to use to manage the images for our application.
 
 ## Github
 
@@ -21,7 +21,7 @@ Check out the complete source code in this  [GitHub Repository](https://github.c
 In this article we are going to build a Next.js e-commerce application for beauty products with Xata and Cloudinary for image management. 
 
 We will cover:
-- Uploading and fetching images from Cloudinary
+- Uploading images to Cloudinary
 - Authentication using nextAuth and Xata using Google
 - Create, Read, Update and Delete operations on a Xata database
 
@@ -58,13 +58,21 @@ Once the development server is up on your browser address bar type http://localh
 
 ![img](https://res.cloudinary.com/bowenivan/image/upload/c_scale,h_840,q_auto:best,w_1440/v1670145998/Articles/herbeauty/demo_ss_xzv5v2.png)
 
-In the `src/index.js` file we have imported three components, the navbar, featured and footer component. The featured component renders the featured products we have to the user.
+In the `src/index.js` file we have imported three components, the `Navbar`, `Featured` and `Footer` component. The `Featured` component renders the featured products we have to the user.
 
 
-## Step 1: Uploading and fetching images from cloudinary
-Below is a schema of our database
+## Step 1: Uploading images to cloudinary
 
-![img_1.png](https://res.cloudinary.com/bowenivan/image/upload/c_fill,h_840,q_auto:best,w_1440/v1669032197/bowen-uploads/herbeauty_db_schema_jdm4s0.png)
+You can download the images we will be using [here](https://collection.cloudinary.com/bowenivan/f98fd40280ed3113c0bf0e094a7ceb9a). Once you have downloaded the images, log in to your   [Cloudinary](https://cloudinary.com/) account and click the media library tab where you can create a new folder by clicking the folder icon besides the home dropdown. 
+Open the folder by clicking the three dots as shown in the image below. You can then upload the images you previously downloaded by clicking upload button on the top right corner.
+
+![cl-createfolder](https://res.cloudinary.com/bowenivan/image/upload/c_scale,h_840,q_auto:best,w_1440/v1670153679/Articles/herbeauty/cl-folder_s50e9c.png)
+
+## Step 2: Authentication using NextAuth.js  
+
+
+
+![img_1.png](https://res.cloudinary.com/bowenivan/image/upload/c_scale,h_840,q_auto:best,w_1440/v1669032197/bowen-uploads/herbeauty_db_schema_jdm4s0.png)
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
