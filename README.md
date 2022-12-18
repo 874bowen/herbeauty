@@ -340,4 +340,42 @@ The CLI will guide you through a setup process in which you will select a worksp
 
 ![xata](https://res.cloudinary.com/bowenivan/image/upload/c_fit,h_840,w_1440/v1671351888/Articles/herbeauty/xata_cq6irj.png)
 
+Once done with the setup, we can use NextAuth and XataAdapter in our application by creating a `./pages/api/auth/[...nextauth]` route and paste the following:
+
+```javascript
+import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import { XataAdapter } from "@next-auth/xata-adapter";
+import { XataClient } from "../../../util/xata";
+
+const client = new XataClient();
+
+export default NextAuth({
+   adapter: XataAdapter(client),
+   providers: [
+      GoogleProvider({
+         clientId: process.env.GOOGLE_CLIENT_ID,
+         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      }),
+   ],
+   secret: process.env.JWT_SECRET
+});
+```
+
+#### Inserting items into our products table
+
+We can insert products into our products on our Xata database using the [browser interface](http://app.xata.io/). You can then go to Cloudinary and copy the links of the images you uploaded and paste it in the images column for individual products as shown below.
+![products](https://res.cloudinary.com/bowenivan/image/upload/c_fit,h_840,q_auto:best,w_1440/v1671357208/Articles/herbeauty/table_esa9kf.png)
+
+### Step 3: Using OAuth 2.0 to Access Google APIs for Authentication
+
+To create a Google provider application log in to [Google Cloud for Developers](https://console.cloud.google.com/)
+
+![gcp](https://res.cloudinary.com/bowenivan/image/upload/c_fit,h_840,q_auto:best,w_1440/v1671353924/Articles/herbeauty/gcp_fzzqmb.png)
+
+
+
+
+
+
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
