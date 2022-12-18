@@ -6,11 +6,11 @@ When building an e-commerce application backend development is important. Develo
 
 Serverless is a development model in the cloud that enables developers to create and run applications without the need for server management. These are servers but they are just abstracted away from the developer.
 
-In this article, we are going to use [Xata](https://xata.io/) as serverless database, think of Xata as a platform where we can create and access the database inside our application through API endpoints.
+In this article, we are going to use [Xata](https://xata.io/) as a serverless database, think of Xata as a platform where we can create and access the database inside our application through API endpoints.
 
 ## The need for image management
 
-Traditionally, we manage our images and media directly from our project. This restricts the way we can serve and transform our media. By transformations we mean basic things like cropping and resizing to advanced layering and text additions.
+Traditionally, we manage our images and media directly from our project. This restricts the way we can serve and transform our media. By transformations we mean basic things like cropping, resizing to advanced layering and text additions.
 
 [Cloudinary](https://cloudinary.com/) is a tool we are going to use to manage the images for our application.
 
@@ -84,7 +84,22 @@ For our simple e-commerce application, we are going to have a structure like the
 
 We can use the browser to create the database but for this demo we are using the [Xata Command Line Interface](https://docs.xata.io/cli/getting-started) which generates a XataClient that will help us work with Xata in a safe way.
 
+Having created a Xata account, we are going to install next-auth, XataAdapter, Xata CLI then configure Xata on our application. We can do it this way:
+
+```bash
+# Install next-auth + adapter
+npm install next-auth @next-auth/xata-adapter
+# Install the Xata CLI globally
+npm install --location=global @xata.io/cli
+# Login
+xata auth login
+# here you can choose the option to create a new API Key from the browser
+```
+
+With everything ready, let's create a new Xata project that uses our next-auth schema and can be used by the Xata adapter. To do so, copy and paste the following `schema.json` file into the directory of your project.
+
 ```json
+// schema.json
 {
    "tables": [
       {
@@ -264,7 +279,7 @@ We can use the browser to create the database but for this demo we are using the
          ]
       },
       {
-         "name": "cart_session",
+         "name": "cart",
          "columns": [
             {
                "name": "user_id",
@@ -313,5 +328,16 @@ We can use the browser to create the database but for this demo we are using the
    ]
 }
 ```
+
+Schema.json contains tables that we are going to have on our Xata database and as you might have guessed the tables named `nextauth_...` stores the users' information we are going to get from Google provider.
+
+Once done, run the following command:
+
+```bash
+xata init --schema=./path/to/your/schema.json
+```
+The CLI will guide you through a setup process in which you will select a workspace and a database. We recommend creating a new database for this, as we'll be supplementing it with tables required by next-auth.
+
+![xata](https://res.cloudinary.com/bowenivan/image/upload/c_fit,h_840,w_1440/v1671351888/Articles/herbeauty/xata_cq6irj.png)
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
