@@ -92,244 +92,13 @@ npm install next-auth @next-auth/xata-adapter
 # Install the Xata CLI globally
 npm install --location=global @xata.io/cli
 # Login
-xata auth login
 # here you can choose the option to create a new API Key from the browser
+xata auth login
 ```
 
-With everything ready, let's create a new Xata project that uses our next-auth schema and can be used by the Xata adapter. To do so, copy and paste the following `schema.json` file into the directory of your project.
+With everything ready, let's create a new Xata project that uses our next-auth schema and can be used by the Xata adapter. To do this we will use the scheme in the `schema.json` at the root of our folder of our application which was included in the starter project.
 
-```json
-// schema.json
-{
-   "tables": [
-      {
-         "name": "nextauth_accounts",
-         "columns": [
-            {
-               "name": "user",
-               "type": "link",
-               "link": {
-                  "table": "nextauth_users"
-               }
-            },
-            {
-               "name": "type",
-               "type": "string"
-            },
-            {
-               "name": "provider",
-               "type": "string"
-            },
-            {
-               "name": "providerAccountId",
-               "type": "string"
-            },
-            {
-               "name": "refresh_token",
-               "type": "string"
-            },
-            {
-               "name": "access_token",
-               "type": "string"
-            },
-            {
-               "name": "expires_at",
-               "type": "int"
-            },
-            {
-               "name": "token_type",
-               "type": "string"
-            },
-            {
-               "name": "scope",
-               "type": "string"
-            },
-            {
-               "name": "id_token",
-               "type": "text"
-            },
-            {
-               "name": "session_state",
-               "type": "string"
-            }
-         ]
-      },
-      {
-         "name": "nextauth_sessions",
-         "columns": [
-            {
-               "name": "sessionToken",
-               "type": "string"
-            },
-            {
-               "name": "expires",
-               "type": "datetime"
-            },
-            {
-               "name": "user",
-               "type": "link",
-               "link": {
-                  "table": "nextauth_users"
-               }
-            }
-         ]
-      },
-      {
-         "name": "nextauth_users",
-         "columns": [
-            {
-               "name": "email",
-               "type": "email"
-            },
-            {
-               "name": "emailVerified",
-               "type": "datetime"
-            },
-            {
-               "name": "name",
-               "type": "string"
-            },
-            {
-               "name": "image",
-               "type": "string"
-            }
-         ]
-      },
-      {
-         "name": "nextauth_users_accounts",
-         "columns": [
-            {
-               "name": "user",
-               "type": "link",
-               "link": {
-                  "table": "nextauth_users"
-               }
-            },
-            {
-               "name": "account",
-               "type": "link",
-               "link": {
-                  "table": "nextauth_accounts"
-               }
-            }
-         ]
-      },
-      {
-         "name": "nextauth_users_sessions",
-         "columns": [
-            {
-               "name": "user",
-               "type": "link",
-               "link": {
-                  "table": "nextauth_users"
-               }
-            },
-            {
-               "name": "session",
-               "type": "link",
-               "link": {
-                  "table": "nextauth_sessions"
-               }
-            }
-         ]
-      },
-      {
-         "name": "nextauth_verificationTokens",
-         "columns": [
-            {
-               "name": "identifier",
-               "type": "string"
-            },
-            {
-               "name": "token",
-               "type": "string"
-            },
-            {
-               "name": "expires",
-               "type": "datetime"
-            }
-         ]
-      },
-      {
-         "name": "products",
-         "columns": [
-            {
-               "name": "name",
-               "type": "string",
-               "unique": true
-            },
-            {
-               "name": "description",
-               "type": "string"
-            },
-            {
-               "name": "price",
-               "type": "float",
-               "notNull": true,
-               "defaultValue": "0.00"
-            },
-            {
-               "name": "image",
-               "type": "string"
-            },
-            {
-               "name": "available",
-               "type": "int"
-            }
-         ]
-      },
-      {
-         "name": "cart",
-         "columns": [
-            {
-               "name": "user_id",
-               "type": "link",
-               "link": {
-                  "table": "nextauth_users"
-               }
-            },
-            {
-               "name": "quantity",
-               "type": "float",
-               "notNull": true,
-               "defaultValue": "1"
-            },
-            {
-               "name": "is_ordered",
-               "type": "bool",
-               "notNull": true,
-               "defaultValue": "false"
-            },
-            {
-               "name": "order",
-               "type": "link",
-               "link": {
-                  "table": "orders"
-               }
-            },
-            {
-               "name": "product_id",
-               "type": "link",
-               "link": {
-                  "table": "products"
-               }
-            }
-         ]
-      },
-      {
-         "name": "orders",
-         "columns": [
-            {
-               "name": "total_amount",
-               "type": "float"
-            }
-         ]
-      }
-   ]
-}
-```
-
-Schema.json contains tables that we are going to have on our Xata database and as you might have guessed the tables named `nextauth_...` stores the users' information we are going to get from Google provider.
+`schema.json` contains tables that we are going to have on our Xata database and as you might have guessed the tables named `nextauth_...` stores the users' information we are going to get from Google provider.
 
 Once done, run the following command:
 
@@ -362,20 +131,30 @@ export default NextAuth({
 });
 ```
 
-#### Inserting items into our products table
+You can find more about NextAuth and Google provider [here](https://next-auth.js.org/providers/google). Xata Adapter will ensure that once a user has used Google for authentication in our app the details provided by Google will be stored in our Xata database.
 
+#### Inserting items into our products table
 We can insert products into our products on our Xata database using the [browser interface](http://app.xata.io/). You can then go to Cloudinary and copy the links of the images you uploaded and paste it in the images column for individual products as shown below.
 ![products](https://res.cloudinary.com/bowenivan/image/upload/c_fit,h_840,q_auto:best,w_1440/v1671357208/Articles/herbeauty/table_esa9kf.png)
 
 ### Step 3: Using OAuth 2.0 to Access Google APIs for Authentication
 
-To create a Google provider application log in to [Google Cloud for Developers](https://console.cloud.google.com/)
+To create a Google provider application log in to [Google Cloud for Developers](https://console.cloud.google.com/), click the new project button on the OAuth consent screen then give your project a name then click create.
 
 ![gcp](https://res.cloudinary.com/bowenivan/image/upload/c_fit,h_840,q_auto:best,w_1440/v1671353924/Articles/herbeauty/gcp_fzzqmb.png)
 
+Once you are done, you are required to fill in more information about your project: choose an external project then fill the required fields only which include app name, support email and developers email. 
 
+After creating a project, go to the Credentials tab then click the CREATE CREDENTIALS button on the top mid of the screen and choose OAuth Client ID. Fill out the form as shown below and click Create. Note that I have two URI's one is for localhost and the other for the deployed application on [Netlify](https://www.netlify.com/). This means that you will just need the localhost URI only unless you have deployed your application.
 
+![credentialsform](https://res.cloudinary.com/bowenivan/image/upload/c_fit,h_840,q_auto:best,w_1440/v1671373589/Articles/herbeauty/gcp1_da3svj.png)
 
+Having finished, you will be given the client id and client secret. These values should be treated as passwords and will be stored inside the `.env` file and this file should be listed inside `.gitignore` file. The JWT_SECRET is also required by Xata for creating access tokens.
 
+```
+GOOGLE_CLIENT_ID=PASTE_YOUR_CLIENT_ID_SECRET_HERE
+GOOGLE_CLIENT_SECRET=PASTE_YOUR_CLIENT_SECRET_GOES_HERE
+JWT_SECRET=SOME_RANDOM_VALUES
+```
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
