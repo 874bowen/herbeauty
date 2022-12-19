@@ -157,4 +157,85 @@ GOOGLE_CLIENT_SECRET=PASTE_YOUR_CLIENT_SECRET_GOES_HERE
 JWT_SECRET=SOME_RANDOM_VALUES
 ```
 
+### Step 4: Login and Logout Functionality
+For our users to be able to log in and log out of our application we are going to `useSession`, a React Hook that helps us check if someone signed in. Before we use this hook we have to wrap our application with the `SessionProvider`. To do this, copy this to `_app.js`:
+
+```javascript
+import '../styles/globals.css'
+import { SessionProvider } from 'next-auth/react';
+
+function MyApp({ Component, pageProps, session }) {
+  return(
+    <SessionProvider session={session}>
+          <Component {...pageProps} />
+    </SessionProvider>
+  );
+}
+export default MyApp;
+```
+
+With our application wrapped with SessionProvider we can implement user login and logout in `Navbar.js`. If we have a valid session it means that the user logged in successfully and we can display the name, image on the Navbar. Otherwise, an invalid session means a user is not logged in and we can display the login button.
+
+```javascript
+import React, { useState } from "react";
+import Link from 'next/link';
+import Image from "next/image";
+import logo from "../public/assets/hb_logo.png";
+import { useSession, signIn, signOut } from 'next-auth/react';
+
+const Navbar = () => {
+   const { data: session } = useSession();
+   let name = "";
+   let email = "";
+   if (session) {
+      email = session.user.email
+      name = session.user.name.split(" ")[0]
+   }
+   let [number, setNumber] = useState(0);
+
+   return (
+      <div className="fixed w-full h-20 shadow-xl z-[100]">
+         <div className="flex justify-between bg-[#292a5e] text-[#efd4e7]  items-center w-full h-full px-2 2xl:px-16">
+            <Image
+               src={logo}
+               alt="/"
+               width="70"
+               height="70"
+            />
+            <div>
+               <ul className="items-center xs:gap-1 gap-3 flex">
+                  {(session) &&
+                     <>
+                        <Link href="/">
+                           <li className="ml-10 text-sm uppercase hover:border-b">
+                              <p className="hidden md:block mr-6">Welcome, {name}!</p>
+                           </li>
+                        </Link>
+                        <Link href="/cart">
+                           <button className="xs:p-0 text-sm">Cart {number}</button>
+                        </Link>
+                        <Link href="/" >
+                           <Image
+                              src={session.user.image}
+                              alt="/"
+                              width="40"
+                              height="40"
+                              className="rounded-full ml-3 group-hover:opacity-20"
+                           />
+                        </Link>
+                     </>
+                  }
+                  <Link href="/" onClick={signIn}>{(!session) &&
+                     <button>Login</button>
+                  }
+                  </Link>
+               </ul>
+            </div>
+         </div>
+      </div>
+   );
+};
+export default Navbar;
+```
+
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
