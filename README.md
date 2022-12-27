@@ -561,7 +561,7 @@ async function handler(req, res) {
 export default handler;
 ```
 
-The order is issued if user clicks the order button thus we have to write the handleOrder function in Cart component as shown:
+The order is issued if user clicks the order button thus we have to implement the handleOrder function in Cart component as shown:
 
 ```javascript
 const handleOrder = (total) => {
@@ -578,7 +578,27 @@ const handleOrder = (total) => {
 }
 ```
 
+### Step 8: Update number of items in cart
+As you might have seen, the navbar shows the number of items in cart and the default is zero. To update it once a user adds an item to cart, we have to query Xata to retrieve the number of items in cart. 
+Luckily, we can just use the `get-cart-items` api endpoint. To get the number of items we just get the length of the result obtained from the api.
+In the Navbar component, add:
 
+```javascript
+(async function getCart() {
+   const cartItems = await fetch("/api/get-carts", {
+      method: "POST",
+      headers: {
+         "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+         email: email
+      })
+   }).then(r => r.json());
 
+   setNumber(cartItems.length);
+})()
+```
 
+### Conclusion
+In this
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
