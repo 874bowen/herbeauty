@@ -1,6 +1,6 @@
 # How to build an e-commerce Next.js application with Xata and Cloudinary
 
-When building an e-commerce application backend development is important. Developers need to come up with complex functions and this might be time-consuming and costly. Serverless computing allows developers to build applications more quickly and less costly because they don't have to worry about managing their own servers.
+When building an e-commerce application backend development is important. Developers need to come up with complex functions and this might be time-consuming and costly. Serverless computing allows developers to build applications more quickly and less costly since they don't have to worry about managing their own servers.
 
 ## What is serverless?
 
@@ -62,7 +62,7 @@ Once the development server is up on your browser address bar type http://localh
 
 ![img](https://res.cloudinary.com/bowenivan/image/upload/c_scale,h_840,q_auto:best,w_1440/v1670145998/Articles/herbeauty/demo_ss_xzv5v2.png)
 
-In the `src/index.js` file we have imported three components, the `Navbar`, `Featured` and `Footer` component. The `Featured` component renders the featured products to the user.
+In the `src/index.js` file we have imported three components: the `Navbar`, `Featured` and `Footer` component. The `Featured` component renders the featured products to the user.
 
 ## Step 1: Uploading images to cloudinary
 
@@ -74,11 +74,11 @@ Open the folder by clicking the three dots as shown in the image below. You can 
 ## Step 2: Authentication using XataAdapter and NextAuth.js
 
 Authentication is a standard thing for web applications because we want to know who is making requests and manage transactions while protecting confidential or private information. [NextAuth.js](https://next-auth.js.org) allows us to manage access to our data by providing a way to authenticate users using providers such as Google.
-[XataAdapter](https://next-auth.js.org/adapters/xata) allows us to store users and sessions into our Xata database.
+[XataAdapter](https://next-auth.js.org/adapters/xata) allows us to store users and sessions into our Xata database once a user is authenticated.
 
 #### Creating a database on Xata
 
-For our simple e-commerce application, we are going to have a structure like the one below: each user is has a cart, a cart belongs to only one user, a cart comprises of many products and one or many products can belong to many carts. Once an order is placed the products in that cart will have an foreign key to the order placed.
+For our simple e-commerce application, we are going to have a structure like the one below: each user is has a cart, a cart belongs to only one user, a cart comprises of one or many products and one or many products can belong to many carts. Once an order is placed the products in that cart will have an foreign key to the order placed.
 
 ![img_1.png](https://res.cloudinary.com/bowenivan/image/upload/c_scale,h_840,q_auto:best,w_1440/v1669032197/bowen-uploads/herbeauty_db_schema_jdm4s0.png)
 
@@ -236,6 +236,70 @@ const Navbar = () => {
    );
 };
 export default Navbar;
+```
+
+### Step 5: Querying Data
+To fetch products from our database, we need to query Xata form our Next.js application. To do this we will have to use the `useEffect` hook as an [Immeidiately Invoked Function Expression](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) (IIFE) that will run as soon as defined without the need for a function call. Inside this function we will fetch data from the `./pages/api/get-products` API route which is defined as follows:
+
+```javascript
+import { getXataClient } from "../../util/xata";
+
+async function handler(req, res) {
+   const xata = getXataClient();
+   // get many products from the products table in our xata database 
+   const products = await xata.db.products.filter({ }).getMany();
+   // sends a HTTP respose back which contains an object/array of products if the fetch was successfull
+   res.send(products);
+}
+
+export default handler;
+```
+We are retrieving data or a response from the get-products endpoint in our Featured component. The products are then set to be the ones we got from the Xata database.
+ 
+```javascript
+import Link from 'next/link'
+...
+
+const Featured = () => {
+   let [products, setProducts] = useState(images)
+   
+   const handleAddToCart = () => {
+
+   }
+
+   (async function getProducts() {
+      const products = await fetch('/api/get-products', {
+         method: "GET",
+         headers: {
+            "Content-Type": "application/json"
+         },
+      }).then(r => r.json());
+      setProducts(products)
+   })();
+   return (
+      ...
+      {products && products.map(product => {
+         return (
+            <div key={product.id} className="...">
+               <div>
+                  <div>
+                     <Image src={product?.image} width={200} height={200} className=" group-hover:opacity-20" alt="/" />
+                     <div className="absolute top-[-2%] left-[-10%] translate-x-[50%] translate-y-[50%]">
+                        <p className="...">${product.price}</p>
+                     </div>
+                  </div>
+                  <div className='...'>
+                     <Link href="" onClick={(e) => {
+                        e.preventDefault();
+                        handleAddToCart();
+                     }}>Add to Cart</Link>
+                  </div>
+               </div>
+            </div>
+            )
+      })}
+   );
+}
 ```
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
