@@ -338,7 +338,7 @@ return (
    ...
 );
 ```
-In the `./pages/api/add-to-cart` file, we are retrieving the email and id from the body of the request. The email is then used to get the user and a check is done to see if the user has same product in his/her cart. If the product exists just increment the quantity of the product else create a new item in the cart
+In the `./pages/api/add-to-cart` file, we are retrieving the email and id from the body of the request. The email is then used to get the user and a check is done to see if the user has same product in his/her cart. If the product exists just increment the quantity of the product (update) else create a new item in the cart
 ```javascript
 import { getXataClient } from "../../util/xata";
 
@@ -359,5 +359,226 @@ const handler = async (req, res) => {
 
 export default handler;
 ```
+As for now, when you view your Xata database from the browser an item will be added to the cart table once a user adds an item to cart.
+
+### Step 7: Creating the /cart route 
+In this application, we need to create a page where the user might actually see the items in his/her cart and confirm order of the items.
+To do this:
+First, create a new file `/pages/cart.js` and inside it call a new cart Component. It should look this way:
+```javascript
+import Head from 'next/head'
+import Cart from '../components/Cart'
+import Footer from '../components/Footer/Footer'
+import Navbar from '../components/Navbar'
+
+export default function Home() {
+  return (
+    <div>
+      <Head>
+        <title>HerBeauty</title>
+        <meta name="description" content="Next.js e-commerce application using Xata as a serverless data storage and Cloudinary for media storage" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <Navbar />
+      <Cart />
+      <Footer />
+    </div>
+  )
+}
+
+```
+We have to query Xata to retrieve items in the cart. To do this create a `./pages/api/get-cart-items` which will give us the product details. 
+
+```javascript
+import { getXataClient } from "../../util/xata";
+
+async function handler(req, res) {
+   let products = []
+   const xata = getXataClient();
+   const { email } = req.body;
+   const user = await xata.db.nextauth_users.filter({ email }).getFirst();
+   // remember an item in the cart is not yet ordered: is_ordered: false
+   const cartItems = await xata.db.cart.filter({ user_id: user.id, is_ordered: false }).getMany();
+   // since cartItems returns an array of objects with quantity, product_id (foreign key) and user_id (foreign key)
+   // use product id to query the products table
+   for (let item of cartItems) {
+      const id = item.product_id.id;
+      let product = await xata.db.products.filter({ id }).getFirst();
+      // add item quantity to product details
+      product = { ...product, quantity: item.quantity };
+      products.push(product);
+   }
+   res.send(products);
+}
+export default handler;
+```
+Once done, create a `Cart` component inside the components folder. Here we need the user to see the cart items, be able to increment and decrement the quantity for a certain item, see the total price and order the items.
+
+```javascript
+import React, { useState } from 'react'
+import { useSession } from 'next-auth/react';
+import Link from 'next/link'
+
+const Cart = () => {
+   let [total, setTotal] = useState(0)
+   const { data: session } = useSession();
+   let [cartItems, setCartItems] = useState([]);
+   let email = "";
+   if (session) {
+      email = session.user.email
+   }
+   (async function getCart() {
+      const cartItems = await fetch("/api/get-cart-items", {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json"
+         },
+         body: JSON.stringify({
+            email: email
+         })
+      }).then(r => r.json());
+      setCartItems(cartItems);
+   })();
+   return (
+      <div className="container">
+         <div className="w-[80%] md:h-screen p-2 m-auto py-20">
+            {cartItems.length === 0 && <p>No Items in Cart <Link href="/" passHref={true} className='underline'>Back to home</Link></p>}
+            {cartItems.length > 0 &&
+               <div>
+                  <Link href="/" className='underline'> <p>Back to home</p></Link>
+                  {cartItems.map((item, i) => {
+                     total += Math.round((item.price * item.quantity) * 100) / 100;
+                     return (
+                        <div className='md:w-[50%]' key={i}>
+                           <p className='m-2 flex items-center gap-2 justify-around'> <span>{item.name}</span> <button className='bg-[#292a5e]  text-[#efd4e7]' onClick={(e) => {
+                              e.preventDefault();
+                              handleReduceQuantity(item.id, item.quantity)
+                           }}>-</button>{" "}{item.quantity}{" "}<button className='bg-[#292a5e] text-[#efd4e7]' onClick={(e) => {
+                              e.preventDefault();
+                              handleAddQuantity(item.id, item.quantity)
+                           }}>+</button><p className='w-[10%]'>{item.price}</p></p>
+                        </div>
+                     );
+                  })}
+                  <p>Total: {total}</p><button className='bg-[#292a5e]  text-[#efd4e7]' onClick={(e) => {
+                     e.preventDefault();
+                     handleOrder(total)
+                  }}>Order</button>
+               </div>}
+         </div>
+      </div>
+   )
+}
+export default Cart;
+```
+#### Incrementing item quantity
+To increment the item quantity an api route, `./pages/api/increment-item-quantity` is required since we are updating data in our Xata database.
+
+```javascript
+import { getXataClient } from "../../util/xata";
+
+const handler = async (req, res) => {
+   const { product_id, quantity } = req.body;
+   const xata = getXataClient();
+   const item = await xata.db.cart.filter({ product_id }).getFirst();
+   item.update({ quantity: quantity });
+   res.end();
+}
+export default handler;
+```
+
+This increment is done once the increment button has been clicked. In the Cart component add this:
+
+```javascript
+const handleAddQuantity = (product_id, quantity) => {
+   fetch("/api/increment-item-quantity", {
+      method: "POST",
+      headers: {
+         "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+         product_id: product_id,
+         quantity: quantity + 1
+      }),
+   }).then(() => window.location.reload());
+}
+```
+
+#### Decrementing item quantity
+To increment the item quantity an api route, `./pages/api/decrement-item-quantity` is required since we are updating data in our Xata database.
+
+```javascript
+import { getXataClient } from "../../util/xata";
+
+const handler = async (req, res) => {
+   const { product_id, quantity } = req.body;
+   const xata = getXataClient();
+   if (quantity > 0) {
+      const item = await xata.db.cart.filter({ product_id }).getFirst();
+      item.update({ quantity: quantity });
+   } else {
+      const item = await xata.db.cart.filter({ product_id }).getFirst();
+      await xata.db.cart.delete(item.id);
+   }
+   res.end();
+}
+export default handler;
+```
+Decrementing the quantity is done once the decrement button has been clicked. In the Cart component add this:
+
+```javascript
+const handleReduceQuantity = (product_id, quantity) => {
+   fetch("/api/decrement-item-quantity", {
+      method: "POST",
+      headers: {
+         "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+         product_id: product_id,
+         quantity: quantity - 1
+      }),
+   })
+}
+```
+
+#### Ordering cart items
+Once a user has confirmed the cart items he/she can order the products. This is where we update the items in our cart table by marking them as ordered or simply setting is_ordered column to `true` through the `./pages/api/order-products` api endpoint. We also create a new order and update the order_id of the cart table with the one just obtained.
+
+```javascript
+import { getXataClient } from "../../util/xata";
+
+async function handler(req, res) {
+   const xata = getXataClient();
+   const { total, email } = req.body;
+   const user = await xata.db.nextauth_users.filter({ email }).getFirst();
+   const order = await xata.db.orders.create({ total_amount: total });
+   const cartItems = await xata.db.cart.filter({ user_id: user.id, is_ordered: false }).getMany();
+   for (let item of cartItems) {
+      item.update({ is_ordered: true, order: order.id });
+   }
+   res.end();
+}
+export default handler;
+```
+
+The order is issued if user clicks the order button thus we have to write the handleOrder function in Cart component as shown:
+
+```javascript
+const handleOrder = (total) => {
+   fetch("/api/order", {
+      method: "POST",
+      headers: {
+         "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+         total: total,
+         email: email
+      }),
+   }).then(() => window.location.reload());
+}
+```
+
+
+
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
