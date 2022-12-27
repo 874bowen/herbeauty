@@ -280,6 +280,7 @@ const Featured = () => {
       ...
       {products && products.map(product => {
          return (
+            ...
             <div key={product.id} className="...">
                <div>
                   <div>
@@ -296,10 +297,67 @@ const Featured = () => {
                   </div>
                </div>
             </div>
+            ...
             )
       })}
    );
 }
+```
+
+### Step 6: Adding products to cart
+To add an item to cart we need to have the product id and the user id since our cart table has a foreign key to users and products table. We will obtain the product id directly from the products we retrieved from the db before and we will use `useSession()` hook to obtain the user email which will give us the user id as described below.
+
+In the Featured component, we post data when the user clicks the add to cart button: we send a HTTP Request with the method POST and the body should contain the user email and the product id. Once we are done sending the request we reload the browser window to get an updated data once the request is sent.
+
+```javascript
+let [products, setProducts] = useState(images);
+
+const { data: session } = useSession();
+
+const handleAddToCart = (email, id) => {
+
+   fetch(`${server}/api/add-to-cart`, {
+      method: "POST",
+      headers: {
+         "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+         email: email,
+         id: id
+      }),
+   }).then(() => window.location.reload());
+}
+
+... 
+return (
+   ...
+   <Link href="" onClick={(e) => {
+      e.preventDefault();
+      handleAddToCart(session.user.email, product.id);
+   }}>Add to Cart</Link>
+   ...
+);
+```
+In the `./pages/api/add-to-cart` file, we are retrieving the email and id from the body of the request. The email is then used to get the user and a check is done to see if the user has same product in his/her cart. If the product exists just increment the quantity of the product else create a new item in the cart
+```javascript
+import { getXataClient } from "../../util/xata";
+
+const handler = async (req, res) => {
+   const { email, id } = req.body;
+   const xata = getXataClient();
+   // get user with email sent in the request body
+   const user = await xata.db.nextauth_users.filter({ email }).getFirst();
+   // check to see whether the product exists in the user's cart
+   const inCart = await xata.db.cart.filter({ user_id: user.id, product_id: id }).getFirst();
+   if (inCart) {
+      inCart.update({ quantity: inCart.quantity + 1 });
+   } else {
+      await xata.db.cart.create({ user_id: { id: user.id }, product_id: { id: id } });
+   }
+   res.end();
+}
+
+export default handler;
 ```
 
 You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
