@@ -25,7 +25,7 @@ In this article we are going to build a Next.js e-commerce application for beaut
 We will cover:
 
 - Uploading images to Cloudinary
-- Authentication using nextAuth and Xata using Google
+- Authentication using nextAuth, Xata and Google provider
 - Create, Read, Update and Delete operations on a Xata database
 
 To follow along through this article you are required to have:
@@ -74,7 +74,7 @@ Open the folder by clicking the three dots as shown in the image below. You can 
 ## Step 2: Authentication using XataAdapter and NextAuth.js
 
 Authentication is a standard thing for web applications because we want to know who is making requests and manage transactions while protecting confidential or private information. [NextAuth.js](https://next-auth.js.org) allows us to manage access to our data by providing a way to authenticate users using providers such as Google.
-[XataAdapter](https://next-auth.js.org/adapters/xata) allows us to store users and sessions into our Xata database once a user is authenticated.
+We will use [XataAdapter](https://next-auth.js.org/adapters/xata) to store user's information and sessions into our Xata database once a user is authenticated.
 
 #### Creating a database on Xata
 
@@ -96,20 +96,20 @@ npm install --location=global @xata.io/cli
 xata auth login
 ```
 
-With everything ready, let's create a new Xata project that uses our next-auth schema and can be used by the Xata adapter. To do this we will use the scheme in the `schema.json` at the root of our folder of our application which was included in the starter project.
+With everything ready, let's create a new Xata project that uses our next-auth schema and can be used by the Xata adapter. To do this we will use the schema in the `schema.json` at the root of our folder of our application which was included in the starter project.
 
-`schema.json` contains tables that we are going to have on our Xata database and as you might have guessed the tables named `nextauth_...` stores the users' information we are going to get from Google provider.
+> `schema.json` contains tables which we will create in our Xata database and as you might have guessed the tables named `nextauth_...` stores the users' information we are going to get from Google provider.
 
-Once done, run the following command:
+To perform this task, run this in your terminal:
 
 ```bash
-xata init --schema=./path/to/your/schema.json
+xata init --schema=./schema.json
 ```
-The CLI will guide you through a setup process in which you will select a workspace and a database. We recommend creating a new database for this, as we'll be supplementing it with tables required by next-auth.
+The CLI will guide you through a setup process in which you will select a workspace and a database. We recommend creating a new database for this.
 
 ![xata](https://res.cloudinary.com/bowenivan/image/upload/c_fit,h_840,w_1440/v1671351888/Articles/herbeauty/xata_cq6irj.png)
 
-Once done with the setup, we can use NextAuth and XataAdapter in our application by creating a `./pages/api/auth/[...nextauth]` route and paste the following:
+Once done with the setup, we can use NextAuth and XataAdapter in our application by creating a `./pages/api/auth/[...nextauth]` route and pasting the following code:
 
 ```javascript
 import NextAuth from "next-auth";
@@ -131,10 +131,10 @@ export default NextAuth({
 });
 ```
 
-You can find more about NextAuth and Google provider [here](https://next-auth.js.org/providers/google). Xata Adapter will ensure that once a user has used Google for authentication in our app the details provided by Google will be stored in our Xata database.
+You can find more about NextAuth and Google provider [here](https://next-auth.js.org/providers/google). Xata Adapter will ensure that once a user has been authenticated in our app the details provided by Google provider will be stored in our Xata database.
 
 #### Inserting items into our products table
-We can insert products into our products on our Xata database using the [browser interface](http://app.xata.io/). You can then go to Cloudinary and copy the links of the images you uploaded and paste it in the images column for individual products as shown below.
+We can insert items into our products table in our Xata database using the [browser interface](http://app.xata.io/). For the images column go to Cloudinary and copy the links of the images you uploaded and paste it in the images column for individual products as shown below.
 ![products](https://res.cloudinary.com/bowenivan/image/upload/c_fit,h_840,q_auto:best,w_1440/v1671357208/Articles/herbeauty/table_esa9kf.png)
 
 ### Step 3: Using OAuth 2.0 to Access Google APIs for Authentication
@@ -145,7 +145,7 @@ To create a Google provider application log in to [Google Cloud for Developers](
 
 Once you are done, you are required to fill in more information about your project: choose an external project then fill the required fields only which include app name, support email and developers email. 
 
-After creating a project, go to the Credentials tab then click the CREATE CREDENTIALS button on the top mid of the screen and choose OAuth Client ID. Fill out the form as shown below and click Create. Note that I have two URI's one is for localhost and the other for the deployed application on [Netlify](https://www.netlify.com/). This means that you will just need the localhost URI only unless you have deployed your application.
+After creating a project, go to the Credentials tab then click the CREATE CREDENTIALS button on the top middle of the screen and choose OAuth Client ID. Fill out the form as shown below and click Create. Note that I have two URI's one is for localhost and the other for the deployed application on [Netlify](https://www.netlify.com/). This means that you will just need the localhost URI only unless you have deployed your application.
 
 ![credentialsform](https://res.cloudinary.com/bowenivan/image/upload/c_fit,h_840,q_auto:best,w_1440/v1671373589/Articles/herbeauty/gcp1_da3svj.png)
 
@@ -158,7 +158,8 @@ JWT_SECRET=SOME_RANDOM_VALUES
 ```
 
 ### Step 4: Login and Logout Functionality
-For our users to be able to log in and log out of our application we are going to `useSession`, a React Hook that helps us check if someone signed in. Before we use this hook we have to wrap our application with the `SessionProvider`. To do this, copy this to `_app.js`:
+For our users to be able to log in and log out of our application we are going to `useSession`, a React Hook that helps us check if someone signed in. Before we use this hook, we have to wrap our application with the `SessionProvider`. 
+To perform this task, your `_app.js` file should look like this:
 
 ```javascript
 import '../styles/globals.css'
@@ -174,7 +175,7 @@ function MyApp({ Component, pageProps, session }) {
 export default MyApp;
 ```
 
-With our application wrapped with SessionProvider, we can implement user login and logout in `Navbar.js`. If we have a valid session it means that the user logged in successfully and we can display the name, image on the Navbar. Otherwise, an invalid session means a user is not logged in and we can display the login button.
+With our application wrapped with SessionProvider, we can implement user login and logout in `Navbar.js`. If we have a valid session it means that the user logged in successfully and we can display the name, image on the Navbar. Otherwise, an invalid session means a user is not logged in and we can display the login button only.
 
 ```javascript
 import React, { useState } from "react";
@@ -238,23 +239,25 @@ const Navbar = () => {
 export default Navbar;
 ```
 
+Having implemented this, you should be able to click the login button and be redirected to a login page. You will choose your email and you will be redirected back to your application. When you check your Xata database, a new row has been added on the nextauth_users table.
+
 ### Step 5: Querying Data
-To fetch products from our database, we need to query Xata from our Next.js application. To do this we will have to use the `useEffect` hook as an [Immeidiately Invoked Function Expression](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) (IIFE) that will run as soon as defined without the need for a function call. Inside this function we will fetch data from the `./pages/api/get-products` API route which is defined as follows:
+To fetch products from our database, we need to query Xata from our Next.js application. To do this we will have to use the `useEffect` hook as an [Immeidiately Invoked Function Expression](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) (IIFE) that will run as soon as defined without the need for a function call. Inside this function we fetch data from the `./pages/api/get-products` API route which is implemented as follows:
 
 ```javascript
 import { getXataClient } from "../../util/xata";
 
 async function handler(req, res) {
    const xata = getXataClient();
-   // get many products from the products table in our xata database 
+   // get all products from the products table in our xata database 
    const products = await xata.db.products.filter({ }).getMany();
-   // sends a HTTP respose back which contains an object/array of products if the fetch was successfull
+   // sends a HTTP respose back which contains an object of products if the fetch was successfull
    res.send(products);
 }
 
 export default handler;
 ```
-We are retrieving data or a response from the get-products endpoint in our Featured component. The products are then set to be the ones we got from the Xata database.
+Our Featured component retrieves structured data of products from the database via the get-products endpoint. The fetched data is then used to set the products displayed in the component which should be incorporated as follows:
  
 ```javascript
 import Link from 'next/link'
@@ -305,7 +308,7 @@ const Featured = () => {
 ```
 
 ### Step 6: Adding products to cart
-To add an item to cart we need to have the product id and the user id since our cart table has a foreign key to users and products table. We will obtain the product id directly from the products we retrieved from the database before and we will use `useSession()` hook to obtain the user email which will give us the user id as described below.
+To add an item to cart we need to have the product id and the user id since our cart table has a foreign key to users and products table. We will obtain the product id directly from the products we retrieved from the database before and we will use `useSession()` hook to obtain the user email which will give us the user id.
 
 In the Featured component, we post data when the user clicks the add to cart button: we send a HTTP Request with the method POST and the body should contain the user email and the product id. Once we are done sending the request we reload the browser window to get an updated data once the request is sent.
 
@@ -359,12 +362,12 @@ const handler = async (req, res) => {
 
 export default handler;
 ```
-As for now, when you view your Xata database from the browser an item will be added to the cart table once a user adds an item to cart.
+When you view your Xata database from the browser an item will be added to the cart table when a user adds an item to cart.
 
 ### Step 7: Creating the /cart route 
 In this application, we need to create a page where the user might actually see the items in his/her cart and confirm order of the items.
 To do this:
-First, create a new file `/pages/cart.js` and inside it call a new cart Component. It should look this way:
+First, create a new file `/pages/cart.js` and inside it import Navbar, Cart and Footer components as shown:
 ```javascript
 import Head from 'next/head'
 import Cart from '../components/Cart'
@@ -412,7 +415,7 @@ async function handler(req, res) {
 }
 export default handler;
 ```
-Once done, create a `Cart` component inside the components folder. Here we need the user to see the cart items, be able to increment and decrement the quantity for a certain item, see the total price and order the items.
+Once done, create a `Cart` component inside the components folder. Here we need the user to see the cart items, be able to increment and decrement the quantity for a certain item, see the total price and order the items. It should be implemented as follows:
 
 ```javascript
 import React, { useState } from 'react'
@@ -487,7 +490,7 @@ const handler = async (req, res) => {
 export default handler;
 ```
 
-This increment is done once the increment button has been clicked. In the Cart component add this:
+This increment is performed when the increment button is clicked. In the Cart component add this:
 
 ```javascript
 const handleAddQuantity = (product_id, quantity) => {
@@ -505,7 +508,7 @@ const handleAddQuantity = (product_id, quantity) => {
 ```
 
 #### Decrementing item quantity
-To increment the item quantity an api route, `./pages/api/decrement-item-quantity` is required since we are updating data in our Xata database.
+To decrement the item quantity an api route, `./pages/api/decrement-item-quantity` is required since we are updating data in our Xata database.
 
 ```javascript
 import { getXataClient } from "../../util/xata";
@@ -524,7 +527,7 @@ const handler = async (req, res) => {
 }
 export default handler;
 ```
-Decrementing the quantity is done once the decrement button has been clicked. In the Cart component add this:
+Decrementing the quantity is done when the decrement button is clicked. In the Cart component add the following code:
 
 ```javascript
 const handleReduceQuantity = (product_id, quantity) => {
@@ -542,7 +545,7 @@ const handleReduceQuantity = (product_id, quantity) => {
 ```
 
 #### Ordering cart items
-Once a user has confirmed the cart items he/she can order the products. This is where we update the items in our cart table by marking them as ordered or simply setting is_ordered column to `true` through the `./pages/api/order-products` api endpoint. We also create a new order and update the order_id of the cart table with the one just obtained.
+Once a user has confirmed the cart items he/she can order the products. This is where we update the items in our cart table by marking them as ordered by simply setting is_ordered column to `true` through the `./pages/api/order-products` api endpoint. We also create a new order and update the order_id of the cart table with the one just obtained.
 
 ```javascript
 import { getXataClient } from "../../util/xata";
@@ -561,7 +564,7 @@ async function handler(req, res) {
 export default handler;
 ```
 
-The order is issued if user clicks the order button thus we have to implement the handleOrder function in Cart component as shown:
+The order is issued when the user clicks the order button, thus we have to implement the handleOrder function in Cart component as shown below:
 
 ```javascript
 const handleOrder = (total) => {
@@ -580,8 +583,7 @@ const handleOrder = (total) => {
 
 ### Step 8: Update number of items in cart
 As you might have seen, the navbar shows the number of items in cart and the default is zero. To update it once a user adds an item to cart, we have to query Xata to retrieve the number of items in cart. 
-Luckily, we can just use the `get-cart-items` api endpoint. To get the number of items we just get the length of the result obtained from the api.
-In the Navbar component, add:
+To determine the number of items in cart, we can use `get-cart-items` API endpoint and get the length of the resulting data. In the Navbar component, add:
 
 ```javascript
 (async function getCart() {
@@ -594,7 +596,7 @@ In the Navbar component, add:
          email: email
       })
    }).then(r => r.json());
-
+   // set the number to be the number of items in cart.
    setNumber(cartItems.length);
 })()
 ```
