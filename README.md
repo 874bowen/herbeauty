@@ -174,7 +174,7 @@ function MyApp({ Component, pageProps, session }) {
 export default MyApp;
 ```
 
-With our application wrapped with SessionProvider we can implement user login and logout in `Navbar.js`. If we have a valid session it means that the user logged in successfully and we can display the name, image on the Navbar. Otherwise, an invalid session means a user is not logged in and we can display the login button.
+With our application wrapped with SessionProvider, we can implement user login and logout in `Navbar.js`. If we have a valid session it means that the user logged in successfully and we can display the name, image on the Navbar. Otherwise, an invalid session means a user is not logged in and we can display the login button.
 
 ```javascript
 import React, { useState } from "react";
@@ -239,7 +239,7 @@ export default Navbar;
 ```
 
 ### Step 5: Querying Data
-To fetch products from our database, we need to query Xata form our Next.js application. To do this we will have to use the `useEffect` hook as an [Immeidiately Invoked Function Expression](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) (IIFE) that will run as soon as defined without the need for a function call. Inside this function we will fetch data from the `./pages/api/get-products` API route which is defined as follows:
+To fetch products from our database, we need to query Xata from our Next.js application. To do this we will have to use the `useEffect` hook as an [Immeidiately Invoked Function Expression](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) (IIFE) that will run as soon as defined without the need for a function call. Inside this function we will fetch data from the `./pages/api/get-products` API route which is defined as follows:
 
 ```javascript
 import { getXataClient } from "../../util/xata";
@@ -305,7 +305,7 @@ const Featured = () => {
 ```
 
 ### Step 6: Adding products to cart
-To add an item to cart we need to have the product id and the user id since our cart table has a foreign key to users and products table. We will obtain the product id directly from the products we retrieved from the db before and we will use `useSession()` hook to obtain the user email which will give us the user id as described below.
+To add an item to cart we need to have the product id and the user id since our cart table has a foreign key to users and products table. We will obtain the product id directly from the products we retrieved from the database before and we will use `useSession()` hook to obtain the user email which will give us the user id as described below.
 
 In the Featured component, we post data when the user clicks the add to cart button: we send a HTTP Request with the method POST and the body should contain the user email and the product id. Once we are done sending the request we reload the browser window to get an updated data once the request is sent.
 
@@ -600,5 +600,6 @@ In the Navbar component, add:
 ```
 
 ### Conclusion
-In this
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+In conclusion, building an e-commerce Next.js application with Xata and Cloudinary is a straightforward process that can be completed in just a few steps. By following the instructions outlined in this article, you can easily set up a fully functional e-commerce application that is fast, scalable and visually apealling. 
+
+The combination of Next.js, Xata and Cloudinary provides a powerful and flexible plaform for building your online store.
